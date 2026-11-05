@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace CampusPlacementManagement.Data;
 
 public class ApplicationDbContext
@@ -44,9 +45,17 @@ public class ApplicationDbContext
     public DbSet<InterviewSchedule> InterviewSchedules
         => Set<InterviewSchedule>();
 
+
+
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+
+
+
 
         // College
 
@@ -144,106 +153,110 @@ public class ApplicationDbContext
 
         // Job Opening
 
-        builder.Entity<JobOpening>()
-            .HasOne(j => j.Company)
-            .WithMany(c => c.JobOpenings)
-            .HasForeignKey(j => j.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<JobOpening>(entity =>
+        {
+            entity.HasKey(j => j.JobOpeningId);
 
-        builder.Entity<JobOpening>()
-            .Property(j => j.SalaryPackage)
-            .HasPrecision(12, 2);
+            entity.HasOne(j => j.Company)
+                .WithMany(c => c.JobOpenings)
+                .HasForeignKey(j => j.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<JobOpening>()
-            .Property(j => j.MinimumCGPA)
-            .HasPrecision(4, 2);
+            entity.Property(j => j.SalaryPackage)
+                .HasPrecision(12, 2);
 
-        // Job Target College
+            entity.Property(j => j.MinimumCGPA)
+                .HasPrecision(4, 2);
 
-        builder.Entity<JobTargetCollege>()
+            // Job Target College
+
+            builder.Entity<JobTargetCollege>()
             .HasOne(t => t.Job)
             .WithMany(j => j.TargetColleges)
             .HasForeignKey(t => t.JobId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<JobTargetCollege>()
-            .HasOne(t => t.College)
-            .WithMany(c => c.JobTargetColleges)
-            .HasForeignKey(t => t.CollegeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<JobTargetCollege>()
+                .HasOne(t => t.College)
+                .WithMany(c => c.JobTargetColleges)
+                .HasForeignKey(t => t.CollegeId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<JobTargetCollege>()
-            .HasIndex(t => new
-            {
-                t.JobId,
-                t.CollegeId
-            })
-            .IsUnique();
+            builder.Entity<JobTargetCollege>()
+                .HasIndex(t => new
+                {
+                    t.JobId,
+                    t.CollegeId
+                })
+                .IsUnique();
 
-        // Job Application
+            // Job Application
 
-        builder.Entity<JobApplication>()
-            .HasOne(a => a.Student)
-            .WithMany(s => s.JobApplications)
-            .HasForeignKey(a => a.StudentId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<JobApplication>()
+                .HasOne(a => a.Student)
+                .WithMany(s => s.JobApplications)
+                .HasForeignKey(a => a.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<JobApplication>()
-            .HasOne(a => a.Job)
-            .WithMany(j => j.JobApplications)
-            .HasForeignKey(a => a.JobId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<JobApplication>()
+                .HasOne(a => a.Job)
+                .WithMany(j => j.JobApplications)
+                .HasForeignKey(a => a.JobId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<JobApplication>()
-            .HasIndex(a => new
-            {
-                a.StudentId,
-                a.JobId
-            })
-            .IsUnique();
+            builder.Entity<JobApplication>()
+                .HasIndex(a => new
+                {
+                    a.StudentId,
+                    a.JobId
+                })
+                .IsUnique();
 
-        // Application Status History
+            // Application Status History
 
-        builder.Entity<ApplicationStatusHistory>()
-            .HasOne(h => h.JobApplication)
-            .WithMany(a => a.StatusHistory)
-            .HasForeignKey(h => h.JobApplicationId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ApplicationStatusHistory>()
+                .HasOne(h => h.JobApplication)
+                .WithMany(a => a.StatusHistory)
+                .HasForeignKey(h => h.JobApplicationId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        // Recruitment Drive
+            // Recruitment Drive
 
-        builder.Entity<RecruitmentDrive>()
-            .HasOne(d => d.Job)
-            .WithMany()
-            .HasForeignKey(d => d.JobId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<RecruitmentDrive>()
+                .HasOne(d => d.Job)
+                .WithMany()
+                .HasForeignKey(d => d.JobId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<RecruitmentDrive>()
-            .HasOne(d => d.College)
-            .WithMany(c => c.RecruitmentDrives)
-            .HasForeignKey(d => d.CollegeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<RecruitmentDrive>()
+                .HasOne(d => d.College)
+                .WithMany(c => c.RecruitmentDrives)
+                .HasForeignKey(d => d.CollegeId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        // Interview Round
+            // Interview Round
 
-        builder.Entity<InterviewRound>()
-            .HasOne(r => r.RecruitmentDrive)
-            .WithMany(d => d.InterviewRounds)
-            .HasForeignKey(r => r.RecruitmentDriveId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<InterviewRound>()
+                .HasOne(r => r.RecruitmentDrive)
+                .WithMany(d => d.InterviewRounds)
+                .HasForeignKey(r => r.RecruitmentDriveId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        // Interview Schedule
+            // Interview Schedule
 
-        builder.Entity<InterviewSchedule>()
-            .HasOne(i => i.JobApplication)
-            .WithMany(a => a.InterviewSchedules)
-            .HasForeignKey(i => i.JobApplicationId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<InterviewSchedule>()
+                .HasOne(i => i.JobApplication)
+                .WithMany(a => a.InterviewSchedules)
+                .HasForeignKey(i => i.JobApplicationId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<InterviewSchedule>()
-            .HasOne(i => i.InterviewRound)
-            .WithMany(r => r.InterviewSchedules)
-            .HasForeignKey(i => i.InterviewRoundId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<InterviewSchedule>()
+                .HasOne(i => i.InterviewRound)
+                .WithMany(r => r.InterviewSchedules)
+                .HasForeignKey(i => i.InterviewRoundId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+
     }
-}
+} 

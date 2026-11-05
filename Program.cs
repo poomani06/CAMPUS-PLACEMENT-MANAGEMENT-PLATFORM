@@ -87,6 +87,15 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+// College Repository
+builder.Services.AddScoped<
+    ICollegeRepository,
+    CollegeRepository>();
+
+// College Service
+builder.Services.AddScoped<
+    ICollegeService,
+    CollegeService>();
 
 // OpenAPI
 builder.Services.AddOpenApi();
@@ -96,10 +105,24 @@ var app = builder.Build();
 // Role seeding
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider
+    var services = scope.ServiceProvider;
+
+    var roleManager = services
         .GetRequiredService<RoleManager<IdentityRole>>();
 
+    var userManager = services
+        .GetRequiredService<UserManager<ApplicationUser>>();
+
+    var configuration = services
+        .GetRequiredService<IConfiguration>();
+
+    // Create roles
     await RoleSeeder.SeedRolesAsync(roleManager);
+
+    // Create initial SuperAdmin
+    await RoleSeeder.SeedSuperAdminAsync(
+        userManager,
+        configuration);
 }
 
 // Middleware

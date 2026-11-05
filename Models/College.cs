@@ -21,10 +21,10 @@ public class College
     public string? Website { get; set; }
 
     public CollegeStatus Status { get; set; }
-        = CollegeStatus.Pending;
 
     public DateTime CreatedAt { get; set; }
-        = DateTime.UtcNow;
+
+    
 
     public DateTime? UpdatedAt { get; set; }
 
