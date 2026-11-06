@@ -82,11 +82,21 @@ builder.Services
 builder.Services.AddAuthorization();
 
 // Repository
+// Repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+
+builder.Services.AddScoped<
+    IPlacementOfficerRepository,
+    PlacementOfficerRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<
+    IPlacementOfficerService,
+    PlacementOfficerService>();
 // College Repository
 builder.Services.AddScoped<
     ICollegeRepository,

@@ -1,4 +1,5 @@
-﻿using CampusPlacementManagement.Models.Enums;
+﻿
+using CampusPlacementManagement.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace CampusPlacementManagement.Models;
@@ -14,8 +15,12 @@ public class PlacementOfficer
 
     public string Designation { get; set; } = string.Empty;
 
-    public AccountStatus Status { get; set; }
-        = AccountStatus.Pending;
+    public PlacementOfficerStatus Status { get; set; }
+        = PlacementOfficerStatus.Pending;
+
+    public string? ApprovedBy { get; set; }
+
+    public DateTime? ApprovedAt { get; set; }
 
     public DateTime CreatedAt { get; set; }
         = DateTime.UtcNow;
