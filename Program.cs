@@ -85,7 +85,13 @@ builder.Services.AddAuthorization();
 // Repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+builder.Services.AddScoped<
+    ICompanyRepository,
+    CompanyRepository>();
 
+builder.Services.AddScoped<
+    ICompanyService,
+    CompanyService>();
 
 builder.Services.AddScoped<
     IPlacementOfficerRepository,
